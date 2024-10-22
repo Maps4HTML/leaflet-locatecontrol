@@ -1,11 +1,11 @@
+import { Marker, setOptions, divIcon, Control, DomUtil, extend, LayerGroup, DomEvent, Util, circle } from 'leaflet';
+
 /*!
 Copyright (c) 2016 Dominik Moritz
 
 This file is part of the leaflet locate control. It is licensed under the MIT license.
 You can find the project at: https://github.com/domoritz/leaflet-locatecontrol
 */
-
-import { Control, Marker, DomUtil, setOptions, divIcon, extend, LayerGroup, circle, DomEvent, Util as LeafletUtil } from "leaflet";
 const addClasses = (el, names) => {
   names.split(" ").forEach((className) => {
     el.classList.add(className);
@@ -560,7 +560,7 @@ const LocateControl = Control.extend({
           padding: this.options.circlePadding,
           maxZoom: this.options.initialZoomLevel || this.options.locateOptions.maxZoom
         });
-        LeafletUtil.requestAnimFrame(function () {
+        Util.requestAnimFrame(function () {
           // Wait until after the next animFrame because the flyTo can be async
           this._ignoreEvent = false;
         }, this);
@@ -651,7 +651,7 @@ const LocateControl = Control.extend({
     const t = this.options.strings.popup;
     function getPopupText() {
       if (typeof t === "string") {
-        return LeafletUtil.template(t, { distance, unit });
+        return Util.template(t, { distance, unit });
       } else if (typeof t === "function") {
         return t({ distance, unit });
       } else {
@@ -695,7 +695,7 @@ const LocateControl = Control.extend({
       angle = Math.round(angle);
 
       this._compassHeading = angle;
-      LeafletUtil.requestAnimFrame(this._drawCompass, this);
+      Util.requestAnimFrame(this._drawCompass, this);
     } else {
       this._compassHeading = null;
     }
@@ -775,9 +775,6 @@ const LocateControl = Control.extend({
         break;
       case "always":
         this.setView();
-        break;
-      case false:
-        // don't set the view
         break;
     }
 
@@ -933,4 +930,4 @@ function locate(options) {
   return new LocateControl(options);
 }
 
-export { LocationMarker, CompassMarker, LocateControl, locate };
+export { CompassMarker, LocateControl, LocationMarker, locate };

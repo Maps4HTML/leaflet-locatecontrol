@@ -11,11 +11,15 @@ module.exports = function (grunt) {
         sourceMap: true
       },
       build: {
-        src: "src/L.Control.Locate.js",
+        src: "dist/L.Control.Locate.umd.js",
         dest: "dist/L.Control.Locate.min.js"
       }
     },
     sass: {
+      options: {
+        implementation: require("sass"),
+        sourceMap: false
+      },
       dist: {
         options: {
           style: "compressed"
@@ -35,40 +39,50 @@ module.exports = function (grunt) {
         }
       }
     },
-    bump: {
+    rollup: {
       options: {
-        files: ["package.json", "bower.json"],
-        commitFiles: [
-          "package.json",
-          "bower.json",
-          "dist/L.Control.Locate.css",
-          "dist/L.Control.Locate.min.css",
-          "dist/L.Control.Locate.min.css.map",
-          "dist/L.Control.Locate.mapbox.css",
-          "dist/L.Control.Locate.mapbox.min.css",
-          "dist/L.Control.Locate.mapbox.min.css.map",
-          "dist/L.Control.Locate.min.js",
-          "dist/L.Control.Locate.min.js.map"
-        ],
-        push: false
-      }
-    },
-    connect: {
-      server: {
+        plugins: [
+          require("@rollup/plugin-node-resolve").nodeResolve(),
+          require("@rollup/plugin-commonjs")()
+        ]
+      },
+      build_es: {
         options: {
-          port: 9000,
-          protocol: "https",
-          keepalive: true
+          format: "es",
+          external: ["leaflet"]
+        },
+        files: {
+          "dist/L.Control.Locate.esm.js": "src/L.Control.Locate.js"
+        }
+      },
+      build_umd: {
+        options: {
+          format: "umd",
+          name: "L.Control.Locate",
+          external: ["leaflet"],
+          globals: {
+            leaflet: "L"
+          },
+          footer: `
+            (function() {
+              if (typeof window !== 'undefined' && window.L) {
+                window.L.control = window.L.control || {};
+                window.L.control.locate = window.L.Control.Locate.locate;
+              }
+            })();
+          `
+        },
+        files: {
+          "dist/L.Control.Locate.umd.js": "src/L.Control.Locate.js"
         }
       }
     }
   });
 
   grunt.loadNpmTasks("grunt-contrib-uglify");
-  grunt.loadNpmTasks("grunt-contrib-sass");
-  grunt.loadNpmTasks("grunt-bump");
-  grunt.loadNpmTasks("grunt-contrib-connect");
+  grunt.loadNpmTasks("grunt-sass");
+  grunt.loadNpmTasks("grunt-rollup");
 
   // Default task(s).
-  grunt.registerTask("default", ["uglify", "sass"]);
+  grunt.registerTask("default", ["rollup:build_es", "rollup:build_umd", "uglify", "sass"]);
 };

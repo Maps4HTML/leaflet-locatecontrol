@@ -1,4 +1,4 @@
-const osmUrl = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+const osmUrl = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
 const osmAttrib = 'Map data © <a href="http://osm.org/copyright">OpenStreetMap</a> contributors';
 let osm = new L.TileLayer(osmUrl, {
   attribution: osmAttrib,
@@ -16,7 +16,7 @@ let mapbox = new L.TileLayer(mapboxUrl, {
 });
 
 let map = new L.Map("map", {
-  layers: [mapbox],
+  layers: [osm],
   center: [51.505, -0.09],
   zoom: 10,
   zoomControl: true
