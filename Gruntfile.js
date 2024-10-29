@@ -18,7 +18,7 @@ module.exports = function (grunt) {
     sass: {
       options: {
         implementation: require("sass"),
-        sourceMap: false
+        sourceMap: true
       },
       dist: {
         options: {
@@ -36,6 +36,33 @@ module.exports = function (grunt) {
         files: {
           "dist/L.Control.Locate.css": "src/L.Control.Locate.scss",
           "dist/L.Control.Locate.mapbox.css": "src/L.Control.Locate.mapbox.scss"
+        }
+      }
+    },
+    bump: {
+      options: {
+        files: ["package.json", "bower.json"],
+        commitFiles: [
+          "package.json",
+          "bower.json",
+          "dist/L.Control.Locate.css",
+          "dist/L.Control.Locate.min.css",
+          "dist/L.Control.Locate.min.css.map",
+          "dist/L.Control.Locate.mapbox.css",
+          "dist/L.Control.Locate.mapbox.min.css",
+          "dist/L.Control.Locate.mapbox.min.css.map",
+          "dist/L.Control.Locate.min.js",
+          "dist/L.Control.Locate.min.js.map"
+        ],
+        push: false
+      }
+    },
+    connect: {
+      server: {
+        options: {
+          port: 9000,
+          protocol: "https",
+          keepalive: true
         }
       }
     },
@@ -82,6 +109,8 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks("grunt-contrib-uglify");
   grunt.loadNpmTasks("grunt-sass");
   grunt.loadNpmTasks("grunt-rollup");
+  grunt.loadNpmTasks("grunt-bump");
+  grunt.loadNpmTasks("grunt-contrib-connect");
 
   // Default task(s).
   grunt.registerTask("default", ["rollup:build_es", "rollup:build_umd", "uglify", "sass"]);
